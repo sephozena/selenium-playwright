@@ -1,0 +1,16 @@
+{
+  "name": "selenium-playwright-project",
+  "version": "1.0.0",
+  "description": "Selenium and Playwright project with POM and reusable code",
+  "main": "index.js",
+  "scripts": {
+    "test:selenium": "mocha src/tests/selenium/*.test.js",
+    "test:playwright": "mocha src/tests/playwright/*.spec.js"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^9.1.3",
+    "playwright": "^1.17.0",
+    "selenium-webdriver": "^4.0.0"
+  }
+}
