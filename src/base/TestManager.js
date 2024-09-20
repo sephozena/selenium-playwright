@@ -1,38 +1,35 @@
+const { By, until } = require('selenium-webdriver');
+const LoginPage = require('../page-objects/LoginPage');
+const TodoPage = require('../page-objects/TodoPage');
+
 class TestManager {
     constructor(driver) {
         this.driver = driver;
+        this.loginPage = new LoginPage(driver);
+        this.todoPage = new TodoPage(driver);
     }
 
     async login(username, password) {
-        // Implement the login logic using the driver
-        await this.driver.get('http://localhost:3000'); // To be just selector as needed
-        await this.driver.findElement({ id: 'username' }).sendKeys(username); 
-        await this.driver.findElement({ id: 'password' }).sendKeys(password); 
-        await this.driver.findElement({ id: 'login-button' }).click(); 
+        await this.driver.get(process.env.APP_URL || 'http://localhost:3000');
+        await this.loginPage.enterUsername(username);
+        await this.loginPage.enterPassword(password);
+        await this.loginPage.clickLogin();
     }
 
     async addItem(itemName) {
-        // Implement the logic to add an item
-        await this.driver.findElement({ id: 'new-item-input' }).sendKeys(itemName); 
-        await this.driver.findElement({ id: 'add-button' }).click();
+        await this.todoPage.addItem(itemName);
     }
 
     async deleteItem(itemName) {
-        // Implement the logic to delete an item
-        const deleteButton = await this.driver.findElement({ xpath: `//li[text()="${itemName}"]/following-sibling::button` }); 
-        await deleteButton.click();
+        await this.todoPage.deleteItem(itemName);
     }
 
     async checkItemExists(itemName) {
-        // Check if the item exists
-        const items = await this.driver.findElements({ xpath: `//li[text()="${itemName}"]` }); 
-        return items.length > 0;
+        return await this.todoPage.checkItemExists(itemName);
     }
 
     async isLoggedIn() {
-        // Implement logic to check if user is logged in
-        // This could involve checking for a specific element or URL
-        return await this.driver.getCurrentUrl() === 'http://localhost:3000/dashboard'; // to be adjusted
+        return await this.driver.getCurrentUrl() === `${process.env.APP_URL || 'http://localhost:3000'}/dashboard`;
     }
 }
 
