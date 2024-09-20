@@ -13,7 +13,7 @@ class BaseTest {
     }
 
     async quitDriver() {
-        // Your driver quitting logic
+        // driver quitting logic
         if (this.driver) {
             await this.driver.quit();
         }
@@ -27,7 +27,7 @@ class BaseTest {
     }
 
     async takeScreenshot() {
-        // Your screenshot logic
+        // screenshot logic
         const screenshot = await this.driver.takeScreenshot();
         require('fs').writeFileSync('screenshot.png', screenshot, 'base64');
     }
