@@ -1,23 +1,24 @@
-const { By, until } = require('selenium-webdriver');
-
 class LoginPage {
-    constructor(driver) {
-        this.driver = driver;
+    constructor(page) {
+        this.page = page;
     }
 
     async enterUsername(username) {
-        await this.driver.wait(until.elementLocated(By.id('username')), 5000);
-        await this.driver.findElement(By.id('username')).sendKeys(username);
+        await this.page.fill('#username', username);
     }
 
     async enterPassword(password) {
-        await this.driver.wait(until.elementLocated(By.id('password')), 5000);
-        await this.driver.findElement(By.id('password')).sendKeys(password);
+        await this.page.fill('#password', password);
     }
 
     async clickLogin() {
-        await this.driver.wait(until.elementLocated(By.id('login')), 5000);
-        await this.driver.findElement(By.id('login')).click();
+        await this.page.click('#login');
+    }
+
+    async login(username, password) {
+        await this.enterUsername(username);
+        await this.enterPassword(password);
+        await this.clickLogin();
     }
 }
 

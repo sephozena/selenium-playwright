@@ -1,26 +1,26 @@
-const BaseTest = require('../base/BaseTest');
-const TestManager = require('../base/TestManager');
+const { test, expect } = require('@playwright/test');
+const TodoPage = require('../pages/TodoPage');
+const LoginPage = require('../pages/LoginPage');
 
-class DeleteItemTest extends BaseTest {
-    constructor() {
-        super();
-        this.testManager = new TestManager(this.driver);
-    }
+test.describe('Delete Item Test', () => {
+    let todoPage, loginPage;
 
-    run() {
-        describe('Delete Item Test', () => {
-            it('should delete an item from the list', async () => {
-                await this.testManager.login('validUser', 'validPassword'); // Replace with valid credentials
-                await this.testManager.addItem('Item to Delete');
+    test.beforeEach(async ({ page }) => {
+        loginPage = new LoginPage(page);
+        todoPage = new TodoPage(page);
+        await page.goto('/');
+        await loginPage.login('validUser', 'validPassword');
+    });
 
-                await this.testManager.deleteItem('Item to Delete');
-
-                // Assert that the item was deleted successfully
-                const isItemDeleted = await this.testManager.checkItemExists('Item to Delete');
-                expect(isItemDeleted).to.be.false; 
-            });
-        });
-    }
-}
-
-new DeleteItemTest().run();
+    test('should delete an item from the list', async ({ page }) => {
+        // Add an item that can be deleted
+        await todoPage.addItem('Item to Delete');
+        
+        // Now delete the item
+        await todoPage.deleteItem('Item to Delete');
+        
+        // Assert that the item no longer exists
+        const isItemDeleted = await todoPage.checkItemExists('Item to Delete');
+        expect(isItemDeleted).toBe(false);
+    });
+});

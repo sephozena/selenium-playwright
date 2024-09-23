@@ -1,24 +1,20 @@
-const { By, until } = require('selenium-webdriver');
-
 class TodoPage {
-    constructor(driver) {
-        this.driver = driver;
+    constructor(page) {
+        this.page = page;
     }
 
     async addItem(item) {
-        await this.driver.wait(until.elementLocated(By.id('new-todo')), 5000);
-        await this.driver.findElement(By.id('new-todo')).sendKeys(item);
-        await this.driver.findElement(By.id('add')).click();
+        await this.page.fill('#new-todo', item);
+        await this.page.click('#add');
     }
 
-    async deleteItem(itemName) {
-        const deleteButton = await this.driver.wait(until.elementLocated(By.xpath(`//li[text()="${itemName}"]/following-sibling::button`)), 5000);
+    async deleteItem(item) {
+        const deleteButton = await this.page.$(`//li[text()="${item}"]/following-sibling::button`);
         await deleteButton.click();
     }
 
-    async checkItemExists(itemName) {
-        const items = await this.driver.findElements(By.xpath(`//li[text()="${itemName}"]`));
-        return items.length > 0;
+    async checkItemExists(item) {
+        return await this.page.$(`//li[text()="${item}"]`) !== null;
     }
 }
 

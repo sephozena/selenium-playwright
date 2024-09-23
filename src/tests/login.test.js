@@ -1,28 +1,21 @@
-const BaseTest = require('../base/BaseTest');
-const TestManager = require('../base/TestManager');
-const { addTimestamp } = require('../utils/customUtils');
+const { test, expect } = require('@playwright/test');
+const LoginPage = require('../pages/LoginPage');
 
-class LoginTest extends BaseTest {
-    constructor() {
-        super();
-        this.testManager = new TestManager(this.driver);
-    }
+test.describe('Login Tests', () => {
+    let loginPage;
 
-    run() {
-        describe('Login Test', () => {
-            it('should log in with valid credentials', async () => {
-                await this.testManager.login(addTimestamp('validUser'), 'validPassword'); // Used the utility function for timestamp
-                const isLoggedIn = await this.testManager.isLoggedIn();
-                expect(isLoggedIn).to.be.true;
-            });
+    test.beforeEach(async ({ page }) => {
+        loginPage = new LoginPage(page);
+        await page.goto('/');
+    });
 
-            it('should not log in with invalid credentials', async () => {
-                await this.testManager.login(addTimestamp('invalidUser'), 'invalidPassword'); // Use invalid credentials
-                const isLoggedIn = await this.testManager.isLoggedIn();
-                expect(isLoggedIn).to.be.false; 
-            });
-        });
-    }
-}
+    test('should log in with valid credentials', async ({ page }) => {
+        await loginPage.login('validUser', 'validPassword');
+        expect(await page.url()).toBe('/dashboard'); // url to be updated
+    });
 
-new LoginTest().run();
+    test('should not log in with invalid credentials', async ({ page }) => {
+        await loginPage.login('invalidUser', 'invalidPassword');
+        expect(await page.url()).not.toBe('/dashboard');
+    });
+});

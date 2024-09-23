@@ -1,31 +1,21 @@
-const BaseTest = require('../base/BaseTest');
-const TestManager = require('../base/TestManager');
+const { test, expect } = require('@playwright/test');
+const LoginPage = require('../pages/LoginPage');
 
-class LoginTest extends BaseTest {
-    constructor() {
-        super();
-        this.testManager = new TestManager(this.driver);
-    }
+test.describe('Login Test', () => {
+    let loginPage;
 
-    run() {
-        describe('Login Test', () => {
-            it('should log in with valid credentials', async () => {
-                await this.testManager.login('validUser', 'validPassword');
+    test.beforeEach(async ({ page }) => {
+        loginPage = new LoginPage(page);
+        await page.goto('/');
+    });
 
-                // Assert that login was successful
-                const isLoggedIn = await this.testManager.isLoggedIn();
-                expect(isLoggedIn).to.be.true;
-            });
+    test('should log in with valid credentials', async ({ page }) => {
+        await loginPage.login('validUser', 'validPassword');
+        expect(await page.url()).toBe('/dashboard'); // Update this according to your app's URL
+    });
 
-            it('should not log in with invalid credentials', async () => {
-                await this.testManager.login('invalidUser', 'invalidPassword');
-
-                // Assert that login failed
-                const isLoggedIn = await this.testManager.isLoggedIn();
-                expect(isLoggedIn).to.be.false;
-            });
-        });
-    }
-}
-
-new LoginTest().run();
+    test('should not log in with invalid credentials', async ({ page }) => {
+        await loginPage.login('invalidUser', 'invalidPassword');
+        expect(await page.url()).not.toBe('/dashboard'); // Adjust URL or validation criteria
+    });
+});

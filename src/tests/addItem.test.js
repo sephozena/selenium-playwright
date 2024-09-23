@@ -1,27 +1,19 @@
-const BaseTest = require('../base/BaseTest');
-const TestManager = require('../base/TestManager');
-const { addTimestamp } = require('../utils/customUtils');
+const { test, expect } = require('@playwright/test');
+const TodoPage = require('../pages/TodoPage');
+const LoginPage = require('../pages/LoginPage');
 
-class AddItemTest extends BaseTest {
-    constructor() {
-        super();
-        this.testManager = new TestManager(this.driver);
-    }
+test.describe('Todo Tests', () => {
+    let todoPage, loginPage;
 
-    run() {
-        describe('Add Item Test', () => {
-            it('should add an item to the list', async () => {
-                await this.testManager.login('validUser', 'validPassword');
-                const itemName = addTimestamp('New Todo Item');
-                await this.testManager.addItem(itemName);
+    test.beforeEach(async ({ page }) => {
+        loginPage = new LoginPage(page);
+        todoPage = new TodoPage(page);
+        await page.goto('/');
+        await loginPage.login('validUser', 'validPassword');
+    });
 
-                // Intentionally failing this test for demonstration
-                const isItemAdded = await this.testManager.checkItemExists(itemName);
-                
-                // Fire screenshot upon test failure
-                expect(isItemAdded).to.be.true; 
-            });
-        });
-    }
-}
-
+    test('should add an item', async ({ page }) => {
+        await todoPage.addItem('New Task');
+        expect(await todoPage.checkItemExists('New Task')).toBe(true);
+    });
+});
