@@ -8,13 +8,14 @@ class TodoPage {
         await this.page.click('#add');
     }
 
-    async deleteItem(item) {
-        const deleteButton = await this.page.$(`//li[text()="${item}"]/following-sibling::button`);
+    async deleteItem(itemName) {
+        const deleteButton = this.page.locator(`li:has-text("${itemName}") button`);
         await deleteButton.click();
     }
 
-    async checkItemExists(item) {
-        return await this.page.$(`//li[text()="${item}"]`) !== null;
+    async checkItemExists(itemName) {
+        const itemLocator = this.page.locator(`li:has-text("${itemName}")`);
+        return await itemLocator.count() > 0;
     }
 }
 
