@@ -4,8 +4,8 @@
   "description": "Selenium and Playwright project with POM and reusable code",
   "main": "index.js",
   "scripts": {
-    "test:selenium": "mocha src/tests/selenium/*.test.js",
-    "test:playwright": "mocha src/tests/playwright/*.spec.js"
+    "start": "node app.js", 
+    "test": "playwright test"
   },
   "devDependencies": {
     "@playwright/test": "^1.47.2",
