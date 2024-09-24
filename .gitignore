@@ -5,3 +5,4 @@ screenshot.png
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+test-results/.last-run.json
